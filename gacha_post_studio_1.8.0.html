@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gacha Arab — استوديو المنشورات</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
+<style>
+  :root{
+    --bg-void:#0A0C12;
+    --bg-panel:#12151D;
+    --bg-panel-2:#181C27;
+    --bg-field:#0E1119;
+    --stroke:#242A3B;
+    --stroke-soft:#1B2030;
+    --ink:#EEF0F7;
+    --ink-dim:#BCC3D4;
+    --ink-faint:#717B99;
+    --accent:#9C8FFF;
+    --accent-soft:#9C8FFF33;
+    --shimmer-a:#FF6EC7;
+    --shimmer-b:#7C6BFF;
+    --danger:#FF6E62;
+    --danger-soft:#FF6E6222;
+    --official:#3FD17E;
+    --official-soft:#3FD17E22;
+    --radius-card:26px;
+    --font-ar:'Tajawal', sans-serif;
+    --font-tech:'Rajdhani', sans-serif;
+  }
+
+  [data-game="genshin"]{ --accent:#E8C468; --accent-soft:#E8C46833; }
+  [data-game="starrail"]{ --accent:#9C8FFF; --accent-soft:#9C8FFF33; }
+  [data-game="wuwa"]{ --accent:#45D4C4; --accent-soft:#45D4C433; }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  body{
+    background:
+      radial-gradient(1100px 600px at 85% -10%, #1B1030 0%, transparent 60%),
+      radial-gradient(900px 500px at -10% 110%, #0B1A2A 0%, transparent 55%),
+      var(--bg-void);
+    color:var(--ink);
+    font-family:var(--font-ar);
+    min-height:100vh;
+    direction:rtl;
+    padding:28px 20px 60px;
+  }
+
+  .app{ max-width:1280px; margin:0 auto; }
+
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:26px; flex-wrap:wrap; gap:14px;
+  }
+  .topbar h1{ font-size:22px; font-weight:900; letter-spacing:.2px; }
+  .topbar h1 span{
+    font-family:var(--font-tech); font-weight:700;
+    background:linear-gradient(90deg,var(--shimmer-a),var(--shimmer-b));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    text-transform:uppercase; font-size:13px; letter-spacing:2px; display:block; margin-bottom:4px;
+  }
+  .topbar p{ color:var(--ink-dim); font-size:13px; }
+
+  .layout{
+    display:grid; grid-template-columns:400px 1fr; gap:22px; align-items:start;
+  }
+  @media (max-width:980px){
+    .layout{ grid-template-columns:1fr; }
+  }
+
+  .panel{
+    background:var(--bg-panel); border:1px solid var(--stroke); border-radius:20px;
+    padding:22px; display:flex; flex-direction:column; gap:22px;
+  }
+
+  .field-group label{
+    display:block; font-size:13px; font-weight:700; color:var(--ink-dim); margin-bottom:9px;
+  }
+  .field-group label .req{ color:var(--accent); }
+
+  .field-label-row {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 9px;
+  }
+  .field-label-row label { margin-bottom: 0; }
+
+  .size-picker {
+    display: flex; background: var(--bg-field); border: 1px solid var(--stroke); border-radius: 8px; padding: 2px; gap: 2px;
+  }
+  .size-btn {
+    background: transparent; border: none; color: var(--ink-faint); font-family: var(--font-ar);
+    font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 5px; cursor: pointer; transition: .15s all;
+  }
+  .size-btn:hover { color: var(--ink-dim); }
+  .size-btn.active { background: var(--stroke); color: var(--accent); }
+
+  .dropzone{
+    border:1.5px dashed var(--stroke); border-radius:14px; background:var(--bg-field);
+    padding:18px; text-align:center; cursor:pointer; transition:.15s border-color, .15s background;
+    position:relative; overflow:hidden;
+  }
+  .dropzone:hover{ border-color:var(--accent); }
+  .dropzone.has-image{ padding:10px; border-style:solid; }
+  .dropzone .dz-hint{ color:var(--ink-faint); font-size:12.5px; }
+  .dropzone .dz-icon{ font-size:22px; margin-bottom:6px; display:block; }
+  .hidden-file{ display:none; }
+
+  .thumb-strip{ display:flex; gap:7px; overflow-x:auto; padding:2px; }
+  .thumb{
+    position:relative; flex:0 0 auto; width:64px; height:64px;
+    border-radius:99px; overflow:hidden; border:1px solid var(--stroke);
+  }
+  .thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .thumb-remove{
+    position:absolute; top:2px; left:2px; width:19px; height:19px;
+    border-radius:50%; background:#00000099; border:1px solid #ffffff33;
+    color:#fff; font-size:12px; line-height:1; cursor:pointer; padding:0;
+  }
+  .thumb.add-more{
+    display:flex; align-items:center; justify-content:center; border:1.5px dashed var(--stroke);
+    color:var(--ink-faint); font-size:24px; cursor:pointer; background:var(--bg-field); transition:.15s border-color;
+  }
+  .thumb.add-more:hover{ border-color:var(--accent); color:var(--accent); }
+
+  .bg-controls-container {
+    display: flex; flex-direction: column; gap: 8px; margin-top: 8px;
+  }
+  .bg-opacity-control {
+    display: flex; align-items: center; justify-content: space-between; background: var(--stroke-soft); padding: 8px 12px; border-radius: 8px;
+  }
+  .bg-opacity-control input[type="range"] {
+    flex: 1; margin-right: 12px; accent-color: var(--accent); cursor: pointer;
+  }
+  .bg-opacity-control span { min-width: 36px; text-align: left; }
+  .bg-remove-btn {
+    width: 100%; background: var(--danger-soft); border: 1px solid var(--danger); color: var(--danger); font-family: var(--font-ar); font-size: 12px; font-weight: 700; padding: 6px; border-radius: 8px; cursor: pointer; transition: .15s all; text-align: center;
+  }
+  .bg-remove-btn:hover { background: var(--danger); color: #fff; }
+
+  .game-pills{ display:flex; gap:8px; flex-wrap:wrap; }
+  .pill{
+    flex:1; min-width:110px; display:flex; align-items:center; justify-content:center; gap:7px;
+    background:var(--bg-field); border:1.5px solid var(--stroke); border-radius:12px;
+    padding:10px 8px; cursor:pointer; font-size:13px; font-weight:700; color:var(--ink-dim); transition:.15s all;
+  }
+  .pill svg{ width:16px; height:16px; }
+  .pill.active{
+    border-color:var(--pill-accent, var(--accent)); color:var(--ink);
+    background:linear-gradient(180deg, var(--pill-accent-soft,var(--accent-soft)), transparent);
+    box-shadow:0 0 0 1px var(--pill-accent, var(--accent)) inset;
+  }
+
+  .type-toggle{ display:flex; gap:8px; }
+  .type-toggle button{
+    flex:1; padding:10px; border-radius:12px; border:1.5px solid var(--stroke);
+    background:var(--bg-field); color:var(--ink-dim); font-family:var(--font-ar);
+    font-weight:800; font-size:13.5px; cursor:pointer; transition:.15s all;
+  }
+  .type-toggle button[data-type="official"].active{ border-color:var(--official); color:var(--official); background:var(--official-soft); }
+  .type-toggle button[data-type="leak"].active{ border-color:var(--danger); color:var(--danger); background:var(--danger-soft); }
+  .type-toggle button[data-type="none"].active{ border-color:var(--ink-faint); color:var(--ink-dim); background:var(--stroke-soft); }
+
+  input[type=text], input[type=number], textarea, select{
+    width:100%; background:var(--bg-field); border:1.5px solid var(--stroke);
+    color:var(--ink); border-radius:12px; padding:11px 13px; font-family:var(--font-ar);
+    font-size:14px; outline:none; resize:vertical; transition:.15s border-color;
+  }
+  input[type=text]:focus, textarea:focus, select:focus{ border-color:var(--accent); }
+  textarea{ min-height:90px; line-height:1.6; }
+
+  .source-wrapper { position: relative; width: 100%; }
+  .source-combo { display: flex; gap: 6px; }
+  .source-combo input { flex: 1; }
+  .source-combo select { width: 44px; padding: 11px 0; text-align: center; flex-shrink: 0; background-image: none; }
+  
+  .autocomplete-items {
+    position: absolute; border: 1px solid var(--stroke); border-bottom: none; border-top: none; z-index: 99;
+    top: 100%; left: 0; right: 0; border-radius: 0 0 12px 12px; overflow: hidden; background: var(--bg-panel-2); box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+  }
+  .autocomplete-items div {
+    padding: 10px 14px; cursor: pointer; font-size: 13.5px; color: var(--ink-dim); border-bottom: 1px solid var(--stroke-soft); transition: .15s all;
+  }
+  .autocomplete-items div:hover { background-color: var(--bg-field); color: var(--ink); }
+
+  .credit-grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .credit-input{ position:relative; }
+  .credit-input svg{
+    position:absolute; top:50%; right:12px; transform:translateY(-50%); width:16px; height:16px; color:var(--ink-faint); pointer-events:none; transition:.15s color;
+  }
+  .credit-input input{ padding-right:36px; }
+  .credit-input input:focus + svg{ color:var(--accent); }
+
+  hr.sep{ border:none; border-top:1px solid var(--stroke-soft); margin:2px 0; }
+
+  .dev-credits {
+    text-align: center; background: var(--bg-field); border: 1px solid var(--stroke-soft); border-radius: 10px; padding: 8px; font-size: 11.5px; color: var(--ink-faint);
+  }
+  .dev-credits a { color: var(--accent); font-family: var(--font-tech); font-weight: 600; letter-spacing: 0.5px; text-decoration: none; transition: .15s color, .15s text-shadow; }
+  .dev-credits a:hover { color: #fff; text-shadow: 0 0 8px var(--accent); }
+
+  .export-btn{
+    margin-top:4px; width:100%; padding:15px; border:none; border-radius:14px;
+    background:linear-gradient(90deg, var(--shimmer-b), var(--shimmer-a)); color:#fff; font-family:var(--font-ar); font-weight:900; font-size:15px;
+    cursor:pointer; letter-spacing:.3px; box-shadow:0 8px 24px -8px #7C6BFF66; transition:.15s transform;
+  }
+  .export-btn:active{ transform:scale(.98); }
+  .export-btn:disabled{ opacity:.6; cursor:wait; }
+
+  /* ---------- Stage ---------- */
+  .stage{ display:flex; flex-direction:column; align-items:center; gap:20px; position:sticky; top:20px; min-width:0; }
+  .stage-hint{ color:var(--ink-faint); font-size:12px; font-family:var(--font-tech); letter-spacing:1px; text-transform:uppercase; }
+
+  .post-card{
+    position:relative; width:420px; height:525px; border-radius:var(--radius-card); overflow:hidden; background:#0E1118; box-shadow:0 30px 70px -25px #000000aa; border:1px solid #ffffff14;
+    flex-shrink: 0;
+  }
+
+  .full-bg-layer {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; z-index: 1; display: none; pointer-events: none;
+  }
+
+  .post-image{ position:absolute; inset:0; background-color:transparent; overflow:hidden; z-index: 2; }
+  .image-grid{ width:100%; height:100%; display:grid; gap:2px; background:transparent; }
+  .image-grid .tile{ position:relative; overflow:hidden; width:100%; height:100%; display:flex; align-items:center; justify-content:center; }
+  .image-grid .tile img{ width:100%; height:100%; object-fit:cover; object-position:center; display:block; }
+  .image-grid.count-1 .tile img{ object-fit:contain; }
+
+  .image-grid.count-2{ grid-template-columns:1fr 1fr; }
+  .image-grid.count-3{ grid-template-columns:1.3fr 1fr; grid-template-rows:1fr 1fr; }
+  .image-grid.count-3 .tile:first-child{ grid-row:1 / 3; }
+  .image-grid.count-4{ grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; }
+  .tile-more{ position:absolute; inset:0; background:#000000b0; color:#fff; display:flex; align-items:center; justify-content:center; font-family:var(--font-tech); font-size:20px; font-weight:700; z-index:2; }
+
+  .scrim{ position:absolute; inset:0; background:linear-gradient(180deg, #05060A00 0%, #05060A55 35%, #05060Aee 70%, #05060A 98%); z-index:3; }
+  .corner{ position:absolute; width:38px; height:38px; z-index:5; filter:drop-shadow(0 0 6px var(--accent)); }
+  .corner svg{ width:100%; height:100%; stroke:var(--accent); fill:none; }
+  .corner.tl{ top:14px; right:14px; transform:scaleX(-1); }
+  .corner.tr{ top:14px; left:14px; }
+  .corner.bl{ bottom:14px; right:14px; transform:scale(-1,-1); }
+  .corner.br{ bottom:14px; left:14px; transform:scaleY(-1); }
+
+  .shimmer-sweep{
+    position:absolute; inset:0; z-index:4; pointer-events:none; background:linear-gradient(115deg, transparent 40%, #ffffff22 50%, transparent 60%); background-size:250% 250%; animation:sweep 5.5s ease-in-out infinite;
+  }
+  @keyframes sweep{ 0%{ background-position:150% 150%; } 50%{ background-position:0% 0%; } 100%{ background-position:-150% -150%; } }
+
+  /* تم إصلاح تمدد وعرض الحاوية المطلقة لمنع تشوه النصوص أثناء التصدير */
+  .content{ 
+    position:absolute; 
+    right:24px; 
+    width:372px; /* تثبيت العرض الكلي لمنع انكماش المحتوى (420px - 48px هوامش) */
+    bottom:85px; 
+    z-index:6; 
+    display:flex; 
+    flex-direction:column; 
+    justify-content: flex-end;
+    overflow:hidden; /* يمنع نهائياً فيضان المحتوى فوق حدوده والتصادم مع عناصر أخرى */
+  }
+  .title-tag-container { 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    gap: 12px; 
+    margin-bottom: 10px; 
+    width: 100%; 
+    flex-wrap: nowrap;
+  }
+  /* تم تحصين هذا العنصر لمنع خروج النص (مثل GENSHIN IMPACT) عن حدود إطاره أثناء التصدير:
+     يُسمح له الآن بالانكماش (min-width:0) وأي نص لا يتسع يُقص بثلاث نقاط (ellipsis) بدل أن يفيض فعلياً
+     خارج حدود البادج، وهذا يحمي من أي تفاوت بعرض الخط بين المعاينة الحية ومحرك التصدير */
+  .title-tag{ font-family:var(--font-tech); font-size:11px; font-weight:700; color:var(--accent); border:1px solid var(--accent); border-radius:6px; padding:2px 8px; letter-spacing:1px; flex-shrink: 1; min-width: 0; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-sizing: border-box; }
+  /* تم استبدال (position:relative + top) و (gap) بحل يعتمد على margin فقط، لأن محرك html-to-image
+     لا يحسب هذين الخاصيتين بشكل موثوق داخل foreignObject أثناء التصدير، ما كان يسبب تراكب/تداخل الباجتين */
+  .badges{ display:flex; align-items:center; flex-shrink: 0; margin-top:3px; }
+  .badge{ display:flex; align-items:center; justify-content:center; gap:5px; padding:3px 9px; border-radius:999px; font-family:var(--font-ar); font-weight:700; font-size:11.5px; border:1.5px solid #ffffff22; box-shadow:0 2px 8px -2px #00000088; white-space: nowrap; flex-shrink:0; }
+  .badges .badge + .badge{ margin-inline-start:6px; }
+  .type-badge{ background:#0A1A12E6; color:var(--official); border-color:var(--official); }
+  .type-badge.leak{ background:#1A0D0CE6; color:var(--danger); border-color:var(--danger); }
+  [data-type="none"] #typeBadge { display: none !important; }
+  .game-badge{ background:#0A0C12E6; color:var(--accent); border-color:var(--accent); }
+  .game-badge svg{ width:12px; height:12px; fill:none; }
+
+  .title{ 
+    font-weight:900; 
+    font-size:21px; 
+    line-height:1.4; 
+    color:#fff; 
+    margin-bottom: 12px; 
+    text-shadow: 0 2px 8px rgba(0,0,0,0.8), 0 4px 20px rgba(0,0,0,0.9); 
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .title.deco-shadow{ text-shadow: 0 2px 8px rgba(0,0,0,0.8), 0 4px 20px rgba(0,0,0,0.9); }
+  .title.deco-gradient{ background:linear-gradient(90deg, #fff, var(--accent)); -webkit-background-clip:text; background-clip:text; color:transparent; text-shadow:none; }
+  .title.deco-outline{ color:#0A0C12; -webkit-text-stroke:1.4px var(--accent); text-stroke:1.4px var(--accent); text-shadow:0 2px 0 #ffffffaa; }
+  .title.deco-neon{ color:#fff; text-shadow:0 0 6px var(--accent), 0 0 18px var(--accent), 0 0 34px var(--accent-soft), 0 2px 10px rgba(0,0,0,0.9); }
+  .title.deco-boxed{ display:inline-block; background:var(--accent-soft); border:1.5px solid var(--accent); border-radius:8px; padding:6px 12px; text-shadow:0 2px 6px rgba(0,0,0,0.7); }
+  .title.deco-underline{ border-bottom:3px solid var(--accent); padding-bottom:9px; text-shadow:0 2px 8px rgba(0,0,0,0.8); }
+  .title.deco-emboss{ color:#F3F4F8; text-shadow:0 1px 0 #ffffff55, 0 -1px 1px #000000cc, 0 4px 14px rgba(0,0,0,0.9); }
+  
+  .body-container{ position:relative; width:100%; display:flex; flex-direction: row; align-items: stretch; gap: 0; }
+  .body{ 
+    flex: 1; 
+    font-size:14px; 
+    line-height:1.75; 
+    color:#FFFFFF; 
+    font-weight:500; 
+    max-height:120px; 
+    overflow:hidden; 
+    white-space:pre-wrap; 
+    text-shadow: 0 2px 6px rgba(0,0,0,0.95), 0 4px 15px rgba(0,0,0,0.85); 
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+  }
+  .body[data-size="small"] { font-size: 12px; line-height: 1.6; -webkit-line-clamp: 5; }
+  .body[data-size="medium"] { font-size: 14px; line-height: 1.75; -webkit-line-clamp: 4; }
+  .body[data-size="large"] { font-size: 15.5px; line-height: 1.8; -webkit-line-clamp: 3; }
+
+  .body.body-deco-shadow{ text-shadow:0 3px 12px #000000, 0 1px 4px #000000; }
+  .body.body-deco-spaced{ letter-spacing:.4px; line-height:1.9; }
+  .body.body-deco-boxed{ background:rgba(5,6,10,0.55); border:1px solid var(--accent-soft); border-radius:10px; padding:10px 12px; -webkit-line-clamp:3; }
+  .body.body-deco-glow{ text-shadow:0 0 10px var(--accent-soft), 0 2px 8px rgba(0,0,0,0.9); }
+  .body.body-deco-mono{ font-family:var(--font-tech); letter-spacing:.6px; font-weight:600; }
+  
+  .body-highlight-bar{
+    display:none; width:4.5px; border-radius:8px; background:linear-gradient(180deg, var(--accent) 0%, rgba(255, 255, 255, 0.4) 100%); margin-left:14px; flex-shrink:0; box-shadow: 0 0 14px var(--accent), 0 0 4px var(--accent-soft); opacity: 0.95;
+  }
+  .body-container.has-highlight .body-highlight-bar{ display:block; }
+  .body-container.has-highlight .body{ background:linear-gradient(90deg, var(--accent-soft) 0%, rgba(255, 255, 255, 0.01) 90%); border-right: 1px solid rgba(255,255,255,0.08); padding:4px 12px; border-radius:0 6px 6px 0; max-height:120px; }
+
+  /* تم إصلاح أبعاد شريط الحقوق في الأسفل لمنع تشوهه */
+  .footer{
+    position:absolute; 
+    right:24px; 
+    width:372px; /* تثبيت العرض برقم بكسل واضح لمنع تداخل الحقوق والناشر */
+    bottom:20px; 
+    z-index:6; 
+    display:flex; 
+    align-items:center; 
+    justify-content:space-between; 
+    gap:10px; 
+    padding-top:12px; 
+    border-top:1px solid rgba(255, 255, 255, 0.15); 
+    font-size:11.5px;
+    height: 48px;
+  }
+  .footer-bg{
+    position:absolute; inset:-12px -14px; z-index:-1; border-radius:14px;
+    display:none; pointer-events:none; overflow:hidden;
+  }
+  .footer-bg.active{ display:block; }
+  .footer-bg .footer-bg-img{
+    position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+    display:none;
+  }
+  .footer-bg .footer-bg-tint{
+    position:absolute; inset:0;
+    background:linear-gradient(180deg, rgba(8,10,16,0.55), rgba(5,6,10,0.92));
+  }
+  .footer-bg-add-btn{
+    width:100%; background:var(--accent-soft); border:1px solid var(--accent); color:var(--accent);
+    font-family:var(--font-ar); font-size:12px; font-weight:700; padding:9px; border-radius:8px;
+    cursor:pointer; transition:.15s all; text-align:center;
+  }
+  .footer-bg-add-btn:hover{ background:var(--accent); color:#fff; }
+  .meta-side{ display:flex; flex-direction:column; gap:3px; flex-shrink: 0; }
+  .publisher{ color:#E2E8F0; font-weight:700; text-shadow: 0 1px 3px rgba(0,0,0,0.8); white-space: nowrap; }
+  .publisher b{ color:var(--accent); }
+  .source-meta{ white-space: nowrap; }
+  .source-meta nudge{ color:#BCC3D4; font-size:10.5px; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
+  .source-meta b{ color:#FFF; font-weight:500; }
+  
+  .credit{ display:flex; flex-direction:column; gap:4px; align-items:flex-end; flex-shrink: 0; }
+  .credit-row{ display:flex; align-items:center; gap:5px; text-shadow: 0 1px 3px rgba(0,0,0,0.8); white-space: nowrap; }
+  .credit-row svg{ width:13px; height:13px; color:var(--accent); flex:0 0 auto; fill:none; }
+  .credit-row span{ color:#E2E8F0; font-family:var(--font-tech); font-size:11.5px; letter-spacing:.4px; direction:ltr; font-weight: 600; }
+
+  .panel-bg{ display:none; position:absolute; inset:0; z-index:2; }
+
+  /* ---------- القوالب الأساسية ---------- */
+  [data-template="editorial"] .corner{ display:none; }
+  [data-template="editorial"] .shimmer-sweep{ display:none; }
+  [data-template="editorial"] .scrim{ display:none; }
+  [data-template="editorial"] .post-image{ top:0; bottom:auto; height:50%; width:100%; border-bottom:3px solid var(--stroke); }
+  [data-template="editorial"] .panel-bg{ display:block; top:50%; bottom:0; background:radial-gradient(circle at top right, #171B26, #0E1118); border-top:5px solid var(--accent); }
+  [data-template="editorial"] .badge{ background:rgba(14, 17, 24, 0.85); }
+  [data-template="editorial"] .content{ bottom:95px; }
+  [data-template="editorial"] .title-tag-container{ margin-bottom:6px; }
+  [data-template="editorial"] .title-tag{ border:none; padding:0; color:var(--accent); font-size:12px; font-weight:800; }
+  [data-template="editorial"] .title{ color:#FFF; font-size:19px; font-weight:800; line-height:1.4; margin-bottom:8px; text-shadow:none !important; background:none !important; -webkit-text-fill-color:initial !important; }
+  [data-template="editorial"] .body{ color:#E2E8F0; font-size:13px; line-height:1.7; max-height:82px; font-weight: 500; text-shadow: none !important; }
+  
+  [data-template="ticker"] .corner{ display:none; }
+  [data-template="ticker"] #typeBadge{ position: relative; top: auto; left: auto; transform: none; border-radius: 6px; border: 1.5px solid currentColor; padding: 3px 10px; box-shadow: 0 2px 8px -2px #00000088; justify-content: center; }
+  [data-template="ticker"] #gameBadge{ display:flex; }
+  [data-template="ticker"] .content{ background:linear-gradient(90deg, #05060Af5 60%, transparent); border-right:5px solid var(--accent); padding:14px 18px; border-radius:2px; bottom: 82px; }
+  [data-template="ticker"] .footer{ right:0; width:420px; left:auto; bottom:0; margin:0; padding:14px 24px 16px; background:#05060Af0; border-top:2px solid var(--accent); height: 56px;}
+
+  [data-template="neon"] .corner{ display:none; }
+  [data-template="neon"] .shimmer-sweep{ display:none; }
+  [data-template="neon"]{ box-shadow:0 0 0 2px var(--accent), 0 0 46px -6px var(--accent), 0 30px 70px -25px #000000aa; }
+  [data-template="neon"] .content{ background:linear-gradient(90deg, #05060Af5 58%, transparent); border-right:3px solid var(--accent); padding:16px 20px; border-radius:4px; box-shadow:-6px 0 24px -8px var(--accent-soft); }
+  [data-template="neon"] .title{ text-shadow:0 0 10px var(--accent), 0 2px 10px rgba(0,0,0,0.9); }
+  [data-template="neon"] .title-tag{ box-shadow:0 0 10px var(--accent-soft); }
+  [data-template="neon"] .footer{ border-top:2px solid var(--accent); box-shadow:0 -6px 18px -10px var(--accent); }
+
+  [data-template="minimal"] .corner{ display:none; }
+  [data-template="minimal"] .shimmer-sweep{ display:none; }
+  [data-template="minimal"] .scrim{ background:linear-gradient(180deg, #05060A00 0%, #05060A33 45%, #05060Ad9 75%, #05060A 100%); }
+  [data-template="minimal"] .title-tag{ border:none; background:var(--accent-soft); padding:3px 10px; border-radius:20px; }
+  [data-template="minimal"] .title{ font-weight:800; }
+  [data-template="minimal"] .footer{ border-top:1px solid rgba(255,255,255,0.1); }
+
+  [data-template="frame"]{ box-shadow:inset 0 0 0 3px var(--accent), inset 0 0 0 9px #0E1118, inset 0 0 0 11px var(--accent-soft), 0 30px 70px -25px #000000aa; }
+  [data-template="frame"] .corner{ width:26px; height:26px; }
+  [data-template="frame"] .corner.tl{ top:22px; right:22px; }
+  [data-template="frame"] .corner.tr{ top:22px; left:22px; }
+  [data-template="frame"] .corner.bl{ bottom:22px; right:22px; }
+  [data-template="frame"] .corner.br{ bottom:22px; left:22px; }
+  [data-template="frame"] .content{ right:32px; width:356px; }
+  [data-template="frame"] .footer{ right:32px; width:356px; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="topbar">
+    <div>
+      <h1><span>Gacha Arab Studio</span>مصمّم منشورات القناة المطور</h1>
+      <p>قنشن إمباكت · هونكاي: ستار ريل · ويذرينق ويفز</p>
+    </div>
+  </div>
+
+  <div class="layout">
+
+    <div class="panel">
+
+      <div class="field-group">
+        <label>صورة الخلفية الكاملة (اختياري)</label>
+        <div class="dropzone" id="bgDropzone">
+          <span class="dz-icon">🌌</span>
+          <span class="dz-hint">اضغط لرفع صورة كخلفية كاملة للبطاقة</span>
+        </div>
+        <input type="file" id="bgFileInput" accept="image/*" class="hidden-file">
+        
+        <div class="bg-controls-container" id="bgControlsWrapper" style="display:none;">
+          <div class="bg-opacity-control">
+            <label style="margin:0; font-size:12px;">شفافية الخلفية:</label>
+            <input type="range" id="bgOpacityRange" min="10" max="100" value="100">
+            <span id="bgOpacityVal" style="font-size:12px; font-family:var(--font-tech);">100%</span>
+          </div>
+          <button type="button" class="bg-remove-btn" id="bgRemoveBtn">🗑️ إزالة صورة الخلفية والعودة للوضع الافتراضي</button>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label>صور المعرض بالمنتصف (محتوى الخبر) <span class="req">*</span></label>
+        <div class="dropzone" id="dropzone">
+          <span class="dz-icon">🖼️</span>
+          <span class="dz-hint">اضغط لاختيار صورة أو أكثر من الجهاز</span>
+        </div>
+        <input type="file" id="fileInput" accept="image/*" multiple class="hidden-file">
+      </div>
+
+      <div class="field-group">
+        <label>ستايل وقالب المنشور</label>
+        <select id="templateSelect" style="font-weight: bold; color: var(--accent);">
+          <option value="rarity" selected>✨ الإطار الأسطوري الغامق (Rarity)</option>
+          <option value="editorial">📰 قالب تحريري نصف ونصف (Editorial)</option>
+          <option value="ticker">🚨 قالب خبر عاجل احترافي (Ticker)</option>
+          <option value="neon">💠 قالب نيون سايبربانك متوهج (Neon)</option>
+          <option value="minimal">🎯 قالب بسيط وأنيق (Minimal)</option>
+          <option value="frame">🖼️ إطار مزدوج فاخر (Frame)</option>
+        </select>
+      </div>
+
+      <div class="field-group">
+        <label>اللعبة</label>
+        <div class="game-pills" id="gamePills">
+          <div class="pill active" data-game="genshin" style="--pill-accent:#E8C468;--pill-accent-soft:#E8C46833">
+            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M12 2 L14.2 9.8 L22 12 L14.2 14.2 L12 22 L9.8 14.2 L2 12 L9.8 9.8 Z"/></svg>
+            قنشن إمباكت
+          </div>
+          <div class="pill" data-game="starrail" style="--pill-accent:#9C8FFF;--pill-accent-soft:#9C8FFF33">
+            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 3 L12 21 M3 12 L21 12" stroke-dasharray="1 4"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/></svg>
+            ستار ريل
+          </div>
+          <div class="pill" data-game="wuwa" style="--pill-accent:#45D4C4;--pill-accent-soft:#45D4C433">
+            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M2 9c2 0 2 3 4 3s2-3 4-3 2 3 4 3 2-3 4-3 2 3 4 3"/><path d="M2 15c2 0 2 3 4 3s2-3 4-3 2 3 4 3 2-3 4-3 2 3 4 3" opacity=".5"/></svg>
+            ويذرينق ويفز
+          </div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label>نوع الخبر</label>
+        <div class="type-toggle" id="typeToggle">
+          <button data-type="official" class="active">رسمي</button>
+          <button data-type="leak">تسريب</button>
+          <button data-type="none">بدون باج 🚫</button>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label>عنوان الموضوع</label>
+        <input type="text" id="titleInput" placeholder="مثال: تفاصيل التحديث القادم 6.0" maxlength="80">
+      </div>
+
+      <div class="field-group">
+        <label>زخرفة العنوان</label>
+        <select id="decoSelect">
+          <option value="deco-shadow" selected>بارز مع ظل ناعم (افتراضي)</option>
+          <option value="deco-gradient">تدرج لوني بلون اللعبة الرسمي</option>
+          <option value="deco-outline">محدد بالخط الخارجي الأنيق</option>
+          <option value="deco-neon">توهج نيون بلون اللعبة</option>
+          <option value="deco-boxed">شريحة مؤطرة بخلفية اللعبة</option>
+          <option value="deco-underline">خط سفلي مميز بلون اللعبة</option>
+          <option value="deco-emboss">نقش بارز ثلاثي الأبعاد</option>
+        </select>
+      </div>
+
+      <div class="field-group">
+        <div class="field-label-row">
+          <label>نص الموضوع</label>
+          <div class="size-picker" id="sizePicker">
+            <button type="button" class="size-btn" data-size="small">صغير</button>
+            <button type="button" class="size-btn active" data-size="medium">متوسط</button>
+            <button type="button" class="size-btn" data-size="large">كبير</button>
+          </div>
+        </div>
+        <textarea id="bodyInput" placeholder="اكتب تفاصيل الخبر هنا..." maxlength="380"></textarea>
+      </div>
+
+      <div class="field-group">
+        <label>زخرفة وتنسيق نص الموضوع</label>
+        <select id="bodyDecoSelect">
+          <option value="body-deco-highlight" selected>شريط تمييز جانبي بلون اللعبة</option>
+          <option value="body-deco-none">عادي بدون إضافات</option>
+          <option value="body-deco-shadow">ظل سفلي مكثف لوضوح كامل للقراءة</option>
+          <option value="body-deco-spaced">تباعد أسطر موسّع وأنيق</option>
+          <option value="body-deco-boxed">صندوق مؤطر بخلفية شفافة</option>
+          <option value="body-deco-glow">توهج ناعم بلون اللعبة</option>
+          <option value="body-deco-mono">خط تقني بتباعد مميز (Tech)</option>
+        </select>
+      </div>
+
+      <hr class="sep">
+
+      <div class="field-group">
+        <label>خلفية الجزء السفلي (الناشر والحقوق)</label>
+        <button type="button" class="footer-bg-add-btn" id="footerBgToggleBtn">🎛️ إضافة خلفية للجزء السفلي</button>
+        <input type="file" id="footerBgFileInput" accept="image/*" class="hidden-file">
+        <div class="bg-controls-container" id="footerBgControlsWrapper" style="display:none;">
+          <div class="bg-opacity-control">
+            <label style="margin:0; font-size:12px;">شفافية الخلفية:</label>
+            <input type="range" id="footerBgOpacityRange" min="10" max="100" value="70">
+            <span id="footerBgOpacityVal" style="font-size:12px; font-family:var(--font-tech);">70%</span>
+          </div>
+          <button type="button" class="bg-remove-btn" id="footerBgRemoveBtn">🗑️ إزالة خلفية الجزء السفلي</button>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label>الناشر</label>
+        <input type="text" id="publisherInput" placeholder="RexLapis_01@" value="RexLapis_01@">
+      </div>
+
+      <div class="field-group">
+        <label>المصدر</label>
+        <div class="source-wrapper">
+          <div class="source-combo">
+            <input type="text" id="sourceInput" placeholder="اكتب المصدر أو اختر من القائمة..." value="رسمي" autocomplete="off">
+            <select id="sourceSelect" title="اختر مصدر من القائمة">
+              <option value="" disabled selected>▾</option>
+            </select>
+          </div>
+          <div id="autocompleteList" class="autocomplete-items"></div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label>حقوق النشر</label>
+        <div class="credit-grid">
+          <div class="credit-input">
+            <input type="text" id="creditGroupInput" placeholder="الكروب" value="Gacha_Arab_01@">
+            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/><circle cx="17" cy="8.5" r="2.4"/><path d="M15.2 14.3c2.4.4 4.3 2.1 4.3 4.7"/></svg>
+          </div>
+          <div class="credit-input">
+            <input type="text" id="creditChannelInput" placeholder="القناء" value="gacha_news_ar@">
+            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M3 11 L20 4 L17 21 L11 15.5 Z"/><path d="M11 15.5 L9.3 20 L8.5 14.8"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="dev-credits">
+        تم تطوير الأداة بواسطة: <a href="tg://user?id=7034295111" target="_blank">RexLapis_01@</a>
+      </div>
+
+      <button class="export-btn" id="exportBtn">⬇ تصدير المنشور بدقة عالية</button>
+    </div>
+
+    <div class="stage">
+      <span class="stage-hint">معاينة مباشرة للمنشور</span>
+
+      <div class="post-card" id="postCard" data-game="genshin" data-type="official" data-template="rarity">
+        
+        <img class="full-bg-layer" id="fullBgLayer" alt="Background Layer">
+
+        <div class="post-image empty" id="postImage"><div class="image-grid" id="imageGrid"></div></div>
+        <div class="panel-bg"></div>
+        <div class="scrim"></div>
+        <div class="shimmer-sweep"></div>
+
+        <div class="corner tl"><svg viewBox="0 0 38 38"><path d="M2 38 L2 10 Q2 2 10 2 L38 2" stroke-width="2.4"/></svg></div>
+        <div class="corner tr"><svg viewBox="0 0 38 38"><path d="M2 38 L2 10 Q2 2 10 2 L38 2" stroke-width="2.4"/></svg></div>
+        <div class="corner bl"><svg viewBox="0 0 38 38"><path d="M2 38 L2 10 Q2 2 10 2 L38 2" stroke-width="2.4"/></svg></div>
+        <div class="corner br"><svg viewBox="0 0 38 38"><path d="M2 38 L2 10 Q2 2 10 2 L38 2" stroke-width="2.4"/></svg></div>
+
+        <div class="content">
+          <div class="title-tag-container">
+            <span class="title-tag" id="titleTag">GENSHIN IMPACT</span>
+            <div class="badges">
+              <span class="badge type-badge" id="typeBadge">رسمي</span>
+              <span class="badge game-badge" id="gameBadge">
+                <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" id="gameBadgeIcon"><path d="M12 2 L14.2 9.8 L22 12 L14.2 14.2 L12 22 L9.8 14.2 L2 12 L9.8 9.8 Z"/></svg>
+                <span id="gameBadgeLabel">قنشن إمباكت</span>
+              </span>
+            </div>
+          </div>
+          
+          <h1 class="title deco-shadow" id="titlePreview">عنوان الموضوع يظهر هنا</h1>
+
+          <div class="body-container has-highlight" id="bodyContainer">
+            <div class="body-highlight-bar"></div>
+            <p class="body" id="bodyPreview" data-size="medium">اكتب نص الموضوع في اللوحة الجانبية وستظهر المعاينة هنا مباشرة بشكل تلقائي.</p>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div class="footer-bg" id="footerBg">
+            <img class="footer-bg-img" id="footerBgImg" alt="Footer Background">
+            <div class="footer-bg-tint"></div>
+          </div>
+          <div class="meta-side">
+            <span class="publisher">الناشر: <b id="publisherPreview">RexLapis_01@</b></span>
+            <span class="source-meta">المصدر: <b id="sourcePreview">رسمي</b></span>
+          </div>
+          <span class="credit">
+            <span class="credit-row">
+              <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/><circle cx="17" cy="8.5" r="2.4"/><path d="M15.2 14.3c2.4.4 4.3 2.1 4.3 4.7"/></svg>
+              <span id="creditGroupPreview">@Gacha_Arab_01</span>
+            </span>
+            <span class="credit-row">
+              <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M3 11 L20 4 L17 21 L11 15.5 Z"/><path d="M11 15.5 L9.3 20 L8.5 14.8"/></svg>
+              <span id="creditChannelPreview">@gacha_news_ar</span>
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const SOURCES_LIST = [
+    "رسمي", "WutheringWaves", "Sleep Leaks", "Team Gamberry78",
+    "Fractured Shores", "StepLeaks", "NeonTeam Leaks", "MeroMero",
+    "WuWa something", "Genshin Delta", "Genshin Leakflow",
+    "Genshin Extra - Italia", "Reddit | Genshin Leaks"
+  ];
+
+  const GAME_META = {
+    genshin:  { label:'قنشن إمباكت',   tag:'GENSHIN IMPACT', icon:'<path d="M12 2 L14.2 9.8 L22 12 L14.2 14.2 L12 22 L9.8 14.2 L2 12 L9.8 9.8 Z"/>' },
+    starrail: { label:'ستار ريل',       tag:'HONKAI: STAR RAIL', icon:'<circle cx="12" cy="12" r="9"/><path d="M12 3 L12 21 M3 12 L21 12" stroke-dasharray="1 4"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/>' },
+    wuwa:     { label:'ويذرينق ويفز',   tag:'WUTHERING WAVES', icon:'<path d="M2 9c2 0 2 3 4 3s2-3 4-3 2 3 4 3 2-3 4-3 2 3 4 3"/><path d="M2 15c2 0 2 3 4 3s2-3 4-3 2 3 4 3 2-3 4-3 2 3 4 3" opacity=".5"/>' }
+  };
+
+  const postCard   = document.getElementById('postCard');
+  const postImage  = document.getElementById('postImage');
+  const imageGrid  = document.getElementById('imageGrid');
+  const dropzone   = document.getElementById('dropzone');
+  const fileInput  = document.getElementById('fileInput');
+  const bodyContainer = document.getElementById('bodyContainer');
+  const bodyPreview = document.getElementById('bodyPreview');
+
+  const bgDropzone = document.getElementById('bgDropzone');
+  const bgFileInput = document.getElementById('bgFileInput');
+  const fullBgLayer = document.getElementById('fullBgLayer');
+  const bgControlsWrapper = document.getElementById('bgControlsWrapper');
+  const bgOpacityRange = document.getElementById('bgOpacityRange');
+  const bgOpacityVal = document.getElementById('bgOpacityVal');
+  const bgRemoveBtn = document.getElementById('bgRemoveBtn');
+
+  const footerBg = document.getElementById('footerBg');
+  const footerBgImg = document.getElementById('footerBgImg');
+  const footerBgToggleBtn = document.getElementById('footerBgToggleBtn');
+  const footerBgFileInput = document.getElementById('footerBgFileInput');
+  const footerBgControlsWrapper = document.getElementById('footerBgControlsWrapper');
+  const footerBgOpacityRange = document.getElementById('footerBgOpacityRange');
+  const footerBgOpacityVal = document.getElementById('footerBgOpacityVal');
+  const footerBgRemoveBtn = document.getElementById('footerBgRemoveBtn');
+
+  const MAX_VISIBLE_TILES = 4;
+  let uploadedImages = []; 
+
+  const sourceSelect = document.getElementById('sourceSelect');
+  const sourceInput = document.getElementById('sourceInput');
+  const sourcePreview = document.getElementById('sourcePreview');
+
+  SOURCES_LIST.forEach(src => {
+    const opt = document.createElement('option');
+    opt.value = src; opt.textContent = src;
+    sourceSelect.appendChild(opt);
+  });
+
+  sourceSelect.addEventListener('change', (e) => {
+    sourceInput.value = e.target.value;
+    sourcePreview.textContent = e.target.value;
+    sourceSelect.value = "";
+  });
+
+  sourceInput.addEventListener('input', function() {
+    const val = this.value;
+    const listContainer = document.getElementById('autocompleteList');
+    listContainer.innerHTML = '';
+    sourcePreview.textContent = val.trim() || 'N/A';
+    if (!val) return false;
+
+    SOURCES_LIST.forEach(src => {
+      if (src.substr(0, val.length).toUpperCase() === val.toUpperCase()) {
+        const item = document.createElement('div');
+        item.innerHTML = "<strong>" + src.substr(0, val.length) + "</strong>" + src.substr(val.length) + "<input type='hidden' value='" + src + "'>";
+        item.addEventListener('click', function() {
+          sourceInput.value = this.getElementsByTagName('input')[0].value;
+          sourcePreview.textContent = sourceInput.value;
+          listContainer.innerHTML = '';
+        });
+        listContainer.appendChild(item);
+      }
+    });
+  });
+
+  document.addEventListener('click', function (e) {
+    if (e.target !== sourceInput) {
+      document.getElementById('autocompleteList').innerHTML = '';
+    }
+  });
+
+  document.querySelectorAll('.size-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      bodyPreview.dataset.size = btn.dataset.size;
+    });
+  });
+
+  function readFileAsDataURL(file) {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve(e.target.result);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function renderDropzone(){
+    if (uploadedImages.length === 0){
+      dropzone.classList.remove('has-image');
+      dropzone.innerHTML = `<span class="dz-icon">🖼️</span><span class="dz-hint">اضغط لاختيار صورة أو أكثر من الجهاز</span>`;
+      return;
+    }
+    dropzone.classList.add('has-image');
+    dropzone.innerHTML = `<div class="thumb-strip">` +
+      uploadedImages.map((src, i) => `
+        <div class="thumb">
+          <img src="${src}">
+          <button type="button" class="thumb-remove" data-idx="${i}" title="إزالة">×</button>
+        </div>`).join('') +
+      `<div class="thumb add-more" id="addMoreTile" title="إضافة صور">+</div>` +
+      `</div>`;
+
+    dropzone.querySelectorAll('.thumb-remove').forEach(btn => {
+      btn.addEventListener('click', ev => {
+        ev.stopPropagation();
+        const idx = parseInt(btn.dataset.idx, 10);
+        uploadedImages.splice(idx, 1);
+        renderDropzone();
+        renderImageGrid();
+      });
+    });
+  }
+
+  function renderImageGrid(){
+    const n = uploadedImages.length;
+    postImage.classList.toggle('empty', n === 0);
+    imageGrid.className = 'image-grid count-' + Math.min(n, MAX_VISIBLE_TILES);
+    if (n === 0){ imageGrid.innerHTML = ''; return; }
+    const shown = uploadedImages.slice(0, MAX_VISIBLE_TILES);
+    imageGrid.innerHTML = shown.map((src, i) => {
+      const overlay = (n > MAX_VISIBLE_TILES && i === MAX_VISIBLE_TILES - 1) ? `<div class="tile-more">+${n - MAX_VISIBLE_TILES}</div>` : '';
+      return `<div class="tile">${overlay}<img src="${src}"></div>`;
+    }).join('');
+  }
+
+  dropzone.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', async e => {
+    if (!e.target.files.length) return;
+    const files = Array.from(e.target.files).filter(f => f.type.startsWith('image/'));
+    for (let f of files) {
+      const base64 = await readFileAsDataURL(f);
+      uploadedImages.push(base64);
+    }
+    renderDropzone();
+    renderImageGrid();
+    fileInput.value = ''; 
+  });
+
+  bgDropzone.addEventListener('click', () => bgFileInput.click());
+  bgFileInput.addEventListener('change', async e => {
+    if (!e.target.files.length) return;
+    const files = Array.from(e.target.files).filter(f => f.type.startsWith('image/'));
+    if (files.length > 0) {
+      const base64 = await readFileAsDataURL(files[0]);
+      fullBgLayer.src = base64;
+      fullBgLayer.style.display = 'block';
+      bgDropzone.classList.add('has-image');
+      bgDropzone.innerHTML = `<span class="dz-icon">🌌</span><span class="dz-hint">تم تطبيق صورة الخلفية المخصصة (اضغط للتغيير)</span>`;
+      bgControlsWrapper.style.display = 'flex';
+    }
+  });
+
+  bgOpacityRange.addEventListener('input', (e) => {
+    const val = e.target.value;
+    bgOpacityVal.textContent = val + '%';
+    fullBgLayer.style.opacity = val / 100;
+  });
+
+  bgRemoveBtn.addEventListener('click', () => {
+    fullBgLayer.removeAttribute('src');
+    fullBgLayer.style.display = 'none';
+    bgFileInput.value = '';
+    bgDropzone.classList.remove('has-image');
+    bgDropzone.innerHTML = `<span class="dz-icon">🌌</span><span class="dz-hint">اضغط لرفع صورة كخلفية كاملة للبطاقة</span>`;
+    bgControlsWrapper.style.display = 'none';
+    bgOpacityRange.value = 100;
+    bgOpacityVal.textContent = '100%';
+    fullBgLayer.style.opacity = 1;
+  });
+
+  footerBgToggleBtn.addEventListener('click', () => {
+    footerBgFileInput.click();
+  });
+
+  footerBgFileInput.addEventListener('change', async e => {
+    if (!e.target.files.length) return;
+    const files = Array.from(e.target.files).filter(f => f.type.startsWith('image/'));
+    if (files.length > 0) {
+      const base64 = await readFileAsDataURL(files[0]);
+      footerBgImg.src = base64;
+      footerBgImg.style.display = 'block';
+      footerBg.classList.add('active');
+      footerBg.style.opacity = footerBgOpacityRange.value / 100;
+      footerBgControlsWrapper.style.display = 'flex';
+      footerBgToggleBtn.style.display = 'none';
+    }
+  });
+
+  footerBgOpacityRange.addEventListener('input', (e) => {
+    const val = e.target.value;
+    footerBgOpacityVal.textContent = val + '%';
+    footerBg.style.opacity = val / 100;
+  });
+
+  footerBgRemoveBtn.addEventListener('click', () => {
+    footerBg.classList.remove('active');
+    footerBg.style.opacity = '';
+    footerBgImg.removeAttribute('src');
+    footerBgImg.style.display = 'none';
+    footerBgFileInput.value = '';
+    footerBgControlsWrapper.style.display = 'none';
+    footerBgToggleBtn.style.display = 'block';
+    footerBgOpacityRange.value = 70;
+    footerBgOpacityVal.textContent = '70%';
+  });
+
+  document.getElementById('templateSelect').addEventListener('change', e => {
+    postCard.dataset.template = e.target.value;
+  });
+
+  document.querySelectorAll('.pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      const game = pill.dataset.game;
+      postCard.dataset.game = game;
+      const meta = GAME_META[game];
+      document.getElementById('gameBadgeLabel').textContent = meta.label;
+      document.getElementById('gameBadgeIcon').innerHTML = meta.icon;
+      document.getElementById('titleTag').textContent = meta.tag;
+    });
+  });
+
+  document.querySelectorAll('#typeToggle button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#typeToggle button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const type = btn.dataset.type;
+      postCard.dataset.type = type;
+      
+      const badge = document.getElementById('typeBadge');
+      if (type === 'official') {
+        badge.textContent = 'رسمي';
+        badge.className = 'badge type-badge';
+      } else if (type === 'leak') {
+        badge.textContent = 'تسريب';
+        badge.className = 'badge type-badge leak';
+      }
+    });
+  });
+
+  const bind = (inputId, previewId, fallback) => {
+    const input = document.getElementById(inputId);
+    const preview = document.getElementById(previewId);
+    input.addEventListener('input', () => { preview.textContent = input.value.trim() || fallback; });
+  };
+  bind('titleInput', 'titlePreview', 'عنوان الموضوع يظهر هنا');
+  bind('bodyInput', 'bodyPreview', 'اكتب نص الموضوع في اللوحة الجانبية وستظهر المعاينة هنا مباشرة بشكل تلقائي.');
+  bind('publisherInput', 'publisherPreview', 'RexLapis_01@');
+  bind('creditGroupInput', 'creditGroupPreview', 'Gacha_Arab_01@');
+  bind('creditChannelInput', 'creditChannelPreview', 'gacha_news_ar@');
+
+  document.getElementById('decoSelect').addEventListener('change', e => {
+    const titleEl = document.getElementById('titlePreview');
+    titleEl.className = 'title ' + e.target.value;
+  });
+
+  document.getElementById('bodyDecoSelect').addEventListener('change', e => {
+    const bodyEl = document.getElementById('bodyPreview');
+    bodyContainer.className = 'body-container'; 
+    bodyEl.className = 'body'; 
+    
+    const val = e.target.value;
+    if (val === 'body-deco-highlight') {
+      bodyContainer.classList.add('has-highlight');
+    } else {
+      bodyEl.classList.add(val);
+    }
+    bodyEl.dataset.size = document.querySelector('.size-btn.active').dataset.size;
+  });
+
+  // --- محرك التصدير الذكي والمعدل لحل مشكلة التصدير والقص والتشوه نهائياً ---
+  document.getElementById('exportBtn').addEventListener('click', async function() {
+    const btn = this;
+    btn.disabled = true;
+    btn.textContent = '⏳ جاري تصدير اللوحة بكامل أبعادها...';
+
+    // 1. الانتظار حتى تحميل كل الخطوط لضمان دقة رسم العناوين العربية والرموز
+    await document.fonts.ready;
+
+    // 2. التحقق مما إذا كانت صورة الخلفية غائبة أو فارغة لتأمين الكرت مؤقتاً بلون صلب لضمان نجاح التصدير
+    const isBgMissing = !fullBgLayer.src || fullBgLayer.src === window.location.href || fullBgLayer.style.display === 'none';
+    if (isBgMissing) {
+      postCard.style.backgroundColor = '#0E1118';
+    }
+
+    // 3. إعدادات التصدير الآمنة والدقيقة لمنع تشوه الباجات والمربعات السفلى
+    const options = {
+      pixelRatio: 2, // دقة 2X كافية جداً ومستقرة للأجهزة الجوالة تمنع انهيار الذاكرة وتشوه الكرت
+      skipFonts: false,
+      width: 420,
+      height: 525,
+      backgroundColor: '#0E1118', // إجبار المحرك على بناء الصورة فوق أرضية داكنة صلبة لمنع مشاكل الشفافية والقص
+      style: {
+        transform: 'none',
+        transformOrigin: 'unset',
+        left: '0px',
+        top: '0px',
+        margin: '0px'
+      },
+      // 5. طبقة حماية إضافية: تجاهل أي عنصر <img> بدون مصدر صالح (مثل طبقة الخلفية أو خلفية الفوتر
+      // عندما تكون غير مستخدمة) حتى لا تحاول المكتبة تحميلها وتفشل عملية التصدير بالكامل
+      filter: (node) => {
+        if (node.tagName === 'IMG') {
+          const src = node.src;
+          if (!src || src === window.location.href) return false;
+        }
+        return true;
+      }
+    };
+
+    // 4. تنفيذ تصدير الصورة بصيغة PNG كاملة ومطابقة تماماً للمعاينة
+    htmlToImage.toPng(postCard, options)
+      .then(function (dataUrl) {
+        const downloadLink = document.createElement('a');
+        downloadLink.download = `gacha-arab-${Date.now()}.png`;
+        downloadLink.href = dataUrl;
+        
+        // محاكاة الضغط للتحميل المتوافق مع متصفحات الهواتف والكمبيوتر
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+      })
+      .catch(function (error) {
+        console.error('حدث خطأ أثناء تصدير الصورة، محاولة التصدير البديل Blob...', error);
+        
+        // محرك بديل احتياطي (Fallback) في حال فشل الطريقة الأولى على المتصفح
+        htmlToImage.toBlob(postCard, options).then(function (blob) {
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.download = `gacha-arab-${Date.now()}.png`;
+          link.href = url;
+          link.click();
+        }).catch(err => {
+          alert('حدث خطأ أثناء معالجة التصدير، يرجى تكرار المحاولة من متصفح جوجل كروم.');
+        });
+      })
+      .finally(() => {
+        // إرجاع خيارات المعاينة الأصلية بعد انتهاء لقطة الشاشة
+        if (isBgMissing) postCard.style.backgroundColor = '';
+        btn.disabled = false;
+        btn.textContent = '⬇ تصدير المنشور بدقة عالية';
+      });
+  });
+</script>
+</body>
+</html>
